@@ -61,6 +61,16 @@ void imprimirMatriz(Matriz A) {
 	printf("> %dx%d\n\n", A.lin, A.col);
 }
 
+void imprimirSis(Matriz A) {
+	int i, j;
+	printf("\n");
+	for(i = 0; i < A.lin; i++) {
+		for(j = 0; j < A.col; j++)
+			printf("x%d: %.3lg\t", i+1, A.m[i][j]);
+		printf("\n");
+	}
+}
+
 Matriz transposta(Matriz A) {
 	Matriz At = criarMatriz(A.col, A.lin); // ordem transposta
 	int i, j;
@@ -149,5 +159,50 @@ Matriz inversa (Matriz A){
     else I = consMat(adjA, 1/det);
     destruirMatriz(adjA);
     return I;
+}
+
+Matriz multiplicaMat(Matriz A, Matriz B){
+    Matriz C;
+    float soma;
+    int i, j, k;
+    if (A.col == B.lin){
+        C = criarMatriz(A.lin , B.col);
+        for(i = 0; i < A.lin; i++)
+            for(j = 0; j < B.col; j++){
+                soma = 0;
+                for (k = 0; k < A.col; k++)
+                    soma += A.m[i][k] * B.m[k][j];
+                C.m[i][j] = soma;
+            }
+    }else{
+    C = criarMatriz(0,0);
+    }
+    return C;
+}
+Matriz InversaRet (Matriz A){
+    Matriz I, T, M;
+    T = transposta(A);
+    //imprimirMatriz(T);
+    M = multiplicaMat(T,A);
+    //imprimirMatriz(M);
+    I = inversa(M);
+    //imprimirMatriz(I);
+    I = multiplicaMat(I,T);
+    destruirMatriz(T);
+    destruirMatriz(M);
+    return I;
+}
+
+void preencherMatrizReg(Matriz A) {
+	int i, j;
+	for(i = 0; i < A.lin; i++)
+		for(j = 0; j < A.col; j++) {
+                if(j == 0){
+                    A.m[i][j] = 1;
+                }else{
+			printf("Entre com o elemento [%d][%d]: ", i+1, j+1);
+			scanf("%lf", A.m[i]+j);
+                }
+		}
 }
 #endif
